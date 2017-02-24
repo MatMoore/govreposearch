@@ -1,0 +1,4 @@
+# run ansible-galaxy install -r requirements.yml -p roles to fetch
+- src: geerlingguy.java
+- src: geerlingguy.elasticsearch
+- src: geerlingguy.ruby

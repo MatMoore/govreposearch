@@ -1,0 +1,5 @@
+- hosts: default
+  roles:
+    - geerlingguy.java
+    - {role: geerlingguy.elasticsearch, elasticsearch_network_host: '0.0.0.0'}
+    - {role: geerlingguy.ruby, ruby_install_from_source: true, ruby_download_url: 'http://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.0.tar.gz', ruby_version: '2.4.0'}
