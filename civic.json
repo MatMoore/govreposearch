@@ -1,0 +1,26 @@
+{
+    "name": "Gov Repo Search",
+    "description": "Search public sector code on github",
+    "license": "MIT",
+    "status": "Ideation",
+    "homepage": "github.com/matmoore/govreposearch",
+    "repository": "github.com/matmoore/govreposearch",
+    "type": "Web App",
+    "contact": {
+        "name": "Mat Moore",
+        "url": "github.com/matmoore/govreposearch/issues"
+    },
+    "data": [
+        {
+            "name": "Github Government Showcase",
+            "url": "https://github.com/github/government.github.com/blob/gh-pages/_data/governments.yml",
+            "metadata": "https://government.github.com/community/"
+        }
+    ],
+    "tags": [
+        "showcase",
+        "open source",
+        "software reuse",
+    ],
+    "id": "https://raw.githubusercontent.com/DCgov/civic.json/master/schemas/schema-v1.json"
+}
