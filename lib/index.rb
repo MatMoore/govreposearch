@@ -39,6 +39,8 @@ private
       repository: {
         properties: {
           name: exact_string,
+          organisation: exact_string,
+          organisation_group: exact_string,
           web_url: unsearchable_string,
           readme: searchable_string,
           license: unsearchable_string,
