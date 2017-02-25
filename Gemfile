@@ -27,6 +27,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'elasticsearch', '~> 2.0'
 gem "octokit", "~> 4.0"
 
 group :development, :test do
