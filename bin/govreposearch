@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+require_relative '../config/environment'
+require 'redcarpet/render_strip'
+
+Rails.logger = Logger.new('/dev/null')
+
+if ARGV.length != 1
+  $stderr.puts "Usage: #{File.basename($0)} <query>"
+  exit(1)
+end
+
+query = ARGV[0]
+puts %Q{Results for "#{query}":\n}
+
+result_set = Searcher.new(log: false).search(query)
+result_set.each_with_index do |result, i|
+  puts "(#{i+1}) #{result.name} - #{result.programming_languages.join(", ")} - #{result.licence}"
+  puts "#{result.web_url}"
+
+  markdown = Redcarpet::Markdown.new(Redcarpet::Render::StripDown)
+  readme = markdown.render(result.readme)
+
+  readme.lines.slice(0, 3).each do |line|
+    print "\n\t#{line.strip.gsub(/[.,!?:;]$/, '')}"
+  end
+
+  if result.readme.lines.size > 3
+    print "...\n\n"
+  else
+    print "\n\n"
+  end
+end
+
+puts "found #{result_set.total} total results"
