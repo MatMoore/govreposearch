@@ -106,6 +106,7 @@ The crawler should be scheduled to run nightly.
 * [Bundler](https://bundler.io/) - Dependency management
 * [Rails](http://rubyonrails.org/) - Web framework
 * [Elasticsearch](https://www.elastic.co/products/elasticsearch) - Search engine
+* [Ansible](https://www.ansible.com/) - Configuration management
 * [Octokit](http://octokit.github.io/octokit.rb/) - Github API client
 
 ## Contributing
@@ -135,7 +136,7 @@ Some organisations also follow metadata standards, which could tell us more abou
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENCE](LICENCE) file for details
 
 ## Acknowledgments and Inspiration
 
