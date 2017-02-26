@@ -5,28 +5,12 @@ software on Github.
 
 ## How it works
 
-The crawler queries all repositories belonging to known government
-organisations on github, using the github API.
+The crawler queries all code repositories belonging to known government
+organisations on Github, using the Github API.
 
-Any repositories that have a licence file in the root of the repository are
-indexed using elasticsearch.
+The README text and other repository information get added to an Elasticsearch search index.
 
-The github API gives us a lot of information about code repositories, such as:
-
-- README text
-- Number of commits
-- Most recent commit
-- Repository topics
-- Programming languages used
-- Number of people that have starred or forked the repository
-- Tags that follow semantic versioning
-- Size of codebase
-
-Some organisations also follow metadata standards, which could tell us
-even more about their repositories. For example:
-- [civic.json](http://open.dc.gov/civic.json/)
-- [.about.yml](https://github.com/18F/about_yml)
-- [.codeinventory.yml](https://github.com/GSA/codeinventory)
+To be indexed, a repository has to have a README file, and the crawler has to be able to figure out the licence. Currently it just looks for some licence strings in the README text, so not all licences get picked up.
 
 ## Getting Started
 
@@ -46,8 +30,38 @@ vagrant ssh
 
 Alternatively, you can install Elasticsearch and ruby 2.4.0 directly on your host machine. (TODO)
 
-### Installing
-Install the gem dependencies with:
+### Building the search index
+
+You need to create and populate the search index to run the app.
+
+First create the search index:
+```
+bundle exec rake index:create_or_replace
+```
+
+If you get any errors, check that Elasticsearch is running and listening on port 9200.
+
+You can check Elasticsearch's health by visiting [http://localhost:9200/_cat/health]().
+
+After creating the index, you can run the crawler with:
+```
+bundle exec rake crawler:crawl
+```
+
+P.S. the crawler will crash when it hits the Github API's rate limit of 60 requests/hour...
+
+To crawl the whole list of organisations, you need to set up an access token.
+Visit [https://github.com/settings/tokens]() to generate one.
+
+Then set the environment variable `GITHUB_API_KEY`, or add it to a `.env` file in the root of the project, like
+```
+GITHUB_API_KEY=<your key here>
+```
+
+Indexing takes a while to run.
+
+### Running the app
+First install the gem dependencies with:
 
 ```
 gem install bundler
@@ -64,15 +78,12 @@ at http://localhost:3000
 
 ## Running the tests
 
-TODO
+The tests are all written in RSpec.
 
-### Crawler tests
-
-TODO
-
-### Web App tests
-
-TODO
+Run them with:
+```
+bundle exec rspec
+```
 
 ### Coding style
 
@@ -105,9 +116,22 @@ The crawler should be scheduled to run nightly.
 4. Push to the branch: `git push origin my-new-feature`
 5. Submit a pull request :D
 
-## Versioning
+### Data that might be useful
+The github API gives us a lot of information about repositories, including:
 
-Use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/matmoore/govwebsearch/tags).
+- README text
+- Number of commits
+- Most recent commit
+- Repository topics
+- Programming languages used
+- Number of people that have starred or forked the repository
+- Tags that follow semantic versioning
+- Size of codebase
+
+Some organisations also follow metadata standards, which could tell us more about their repositories. For example:
+- [civic.json](http://open.dc.gov/civic.json/)
+- [.about.yml](https://github.com/18F/about_yml)
+- [.codeinventory.yml](https://github.com/GSA/codeinventory)
 
 ## License
 
@@ -115,8 +139,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments and Inspiration
 
-* Thanks to [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2) and [zenorocha](https://gist.github.com/zenorocha/4526327) for their handy README templates
-* [Govcode](https://github.com/dlapiduz/govcode.org)
-* [code.gov](https://code.gov) and their discussion of [metadata standards](https://github.com/presidential-innovation-fellows/code-gov-web/issues/41)
-* [Code for DC's project browser](http://codefordc.org/projects/) and the [Code for America API](https://github.com/codeforamerica/cfapi)
-* [open.gsa](http://open.gsa.gov/) and [CFPB Open Tech](https://cfpb.github.io/)
+* Thanks to [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2) and [zenorocha](https://gist.github.com/zenorocha/4526327) for their handy README templates.
+* [Govcode](https://github.com/dlapiduz/govcode.org) is (was?) a similar project.
+* [code.gov](https://code.gov) lets you search code released by the US government. They are also looking into [metadata standards](https://github.com/presidential-innovation-fellows/code-gov-web/issues/41).
+* [Code for DC's project browser](http://codefordc.org/projects/) and the [Code for America API](https://github.com/codeforamerica/cfapi) cover projects from civic tech organisations.
+* [open.gsa](http://open.gsa.gov/) and [CFPB Open Tech](https://cfpb.github.io/) showcase projects from the GSA and CFPB.

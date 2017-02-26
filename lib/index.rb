@@ -22,6 +22,29 @@ class Index
     )
   end
 
+  # Index or reindex a repository
+  def add(repo)
+    payload = ElasticsearchPayload.new(repo)
+
+    begin
+      client.create(
+        index: NAME,
+        type: 'repository',
+        id: payload.id,
+        body: payload.body
+      )
+    rescue Elasticsearch::Transport::Transport::Errors::Conflict
+      # The gem forces an op_type of :create for the index endpoint, so we have
+      # to use the partial update API to reindex a document.
+      client.update(
+        index: NAME,
+        type: 'repository',
+        id: payload.id,
+        body: {doc: payload.body}
+      )
+    end
+  end
+
 private
 
   attr_reader :client
