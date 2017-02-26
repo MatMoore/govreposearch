@@ -63,6 +63,9 @@ class Crawler
       rescue Octokit::NotFound
         # We're not interested in anything without a readme or licence.
         nil
+      rescue Octokit::UnavailableForLegalReasons
+        # DMCA bullshit
+        nil
       end
     end.compact
   end

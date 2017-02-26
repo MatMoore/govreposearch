@@ -23,7 +23,7 @@ class Index
   end
 
   # Index or reindex a repository
-  def add(repo)
+  def add(repo, replace: false)
     payload = ElasticsearchPayload.new(repo)
 
     begin
@@ -41,7 +41,7 @@ class Index
         type: 'repository',
         id: payload.id,
         body: {doc: payload.body}
-      )
+      ) if replace
     end
   end
 
