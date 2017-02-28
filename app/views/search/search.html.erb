@@ -2,29 +2,29 @@
 <div class="row">
   <div class="col col-md-12">
 <h1>GovRepoSearch</h1>
-<%= bootstrap_form_tag(url: "/", method: :get, layout: :inline, enforce_utf8: false) do |f| %>
 
 <div class="well search-box ">
-<div class="input-group col-md-12">
-  <input type="text" name="q" class="form-control" value="<%= params[:q] %>" placeholder="Search for...">
-  <span class="input-group-btn">
-    <input type="submit" value="Search" class="btn btn-primary"/>
-  </span>
-</div>
+  <%= bootstrap_form_tag(url: "/", method: :get, layout: :inline, enforce_utf8: false) do |f| %>
+  <div class="input-group col-md-12">
+    <input type="text" name="q" class="form-control" value="<%= params[:q] %>" placeholder="Search for...">
+    <span class="input-group-btn">
+      <input type="submit" value="Search" class="btn btn-primary"/>
+    </span>
+  </div>
+  <% end %>
 </div>
 
-<% end %>
 <% if @results.total > 0 %>
-<ul class="list-group">
-<% @results.each_with_index do |result, i| %>
-<li class="list-group-item">
-<%= result.name %>
-</li>
-<% end %>
+  <ul class="list-group">
+  <% @results.each_with_index do |result, i| %>
+    <li class="list-group-item">
+      <%= link_to result.name, result.web_url %>
+    </li>
+  <% end %>
 </ul>
 <p>Showing <%= @results.results.count %> of <%= @results.total %> repositories.</p>
 <% else %>
-<p>No repositories found.</p>
+  <p>No repositories found.</p>
 <% end %>
 
 </div>
