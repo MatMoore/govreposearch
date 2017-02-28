@@ -14,7 +14,13 @@ puts %Q{Results for "#{query}":\n}
 
 result_set = Searcher.new(log: false).search(query)
 result_set.each_with_index do |result, i|
-  puts "(#{i+1}) #{result.name} - #{result.programming_languages.join(", ")} - #{result.licence}"
+
+  programming_languages = result.programming_languages.join(", ")
+  if programming_languages.blank?
+    programming_languages = '?'
+  end
+
+  puts "(#{i+1}) #{result.name} - #{programming_languages}"
   puts "#{result.web_url}"
 
   markdown = Redcarpet::Markdown.new(Redcarpet::Render::StripDown)

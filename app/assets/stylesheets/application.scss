@@ -13,3 +13,7 @@
  *= require_tree .
  *= require_self
  */
+ @import "bootstrap-sprockets";
+ @import "bootstrap";
+
+ .search-box {margin-bottom: 2em; margin-top: 2em;}
