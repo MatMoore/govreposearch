@@ -20,7 +20,8 @@ class ElasticsearchPayload
       stargazers_count: repo.stargazers_count,
       watchers_count: repo.watchers_count,
       forks_count: repo.forks_count,
-      programming_languages: repo.programming_languages
+      programming_languages: repo.programming_languages,
+      description: repo.description
     }
   end
 

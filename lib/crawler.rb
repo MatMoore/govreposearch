@@ -15,7 +15,8 @@ class Crawler
     :forks_count,
     #:topics,
     #:latest_version,
-    :programming_languages
+    :programming_languages,
+    :description
   )
 
   attr_reader :no_licence
@@ -59,6 +60,7 @@ class Crawler
           response["watchers_count"],
           response["forks_count"],
           [response["language"]],
+          response["description"]
         ) if licence
       rescue Octokit::NotFound
         # We're not interested in anything without a readme or licence.
