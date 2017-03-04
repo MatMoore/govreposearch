@@ -6,7 +6,6 @@ class Crawler
     :organisation,
     :web_url,
     :readme,
-    :licence,
     :created_time,
     :last_commit_time,
     #:last_issue_time,
@@ -38,12 +37,24 @@ class Crawler
 
         readme = github_client.readme(response[:full_name], accept: 'application/vnd.github.v3.raw').force_encoding('UTF-8')
 
-        licence = LicenceScraper.scrape_text(readme)
+        contents = github_client.contents(response[:full_name], :path => "")
+        has_license = contents.any? do |file_response|
+          filename = file_response[:name].downcase
+          ext = File.extname(filename)
+          if ext.blank? || %w(txt md rst).include?(ext)
+            /li[sc]ence/ =~ File.basename(filename, ext)
+          else
+            false
+          end
+        end
 
-        if licence.nil?
-          self.no_licence << response[:full_name]
-        else
+        has_licence ||= (!LicenceScraper.scrape_text(readme).nil?)
+
+        if has_licence
           self.number_valid += 1
+        else
+          self.no_licence << response[:full_name]
+          next
         end
 
         Repository.new(
@@ -53,7 +64,6 @@ class Crawler
           organisation.github_name,
           response[:html_url],
           readme,
-          licence,
           response["created_at"],
           response["pushed_at"],
           response["stargazers_count"],
@@ -61,7 +71,7 @@ class Crawler
           response["forks_count"],
           [response["language"]],
           response["description"]
-        ) if licence
+        )
       rescue Octokit::NotFound
         # We're not interested in anything without a readme or licence.
         nil

@@ -18,10 +18,9 @@ class ResultSet
           "name",
           "web_url",
           "organisation",
-          "_score",
           "readme",
-          "licence",
-          "programming_languages"
+          "programming_languages",
+          "description"
         ).values
       )
     end
@@ -43,7 +42,7 @@ class ResultSet
     :web_url,
     :organisation,
     :readme,
-    :licence,
-    :programming_languages
+    :programming_languages,
+    :description
   )
 end

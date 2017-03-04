@@ -67,7 +67,6 @@ private
           organisation_group: exact_string,
           web_url: unsearchable_string,
           readme: searchable_string,
-          license: unsearchable_string,
           created_time: timestamp,
           last_commit_time: timestamp,
           last_issue_time: timestamp,

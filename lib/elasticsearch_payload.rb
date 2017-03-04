@@ -14,7 +14,6 @@ class ElasticsearchPayload
       organisation: repo.organisation,
       web_url: repo.web_url,
       readme: repo.readme,
-      licence: repo.licence,
       created_time: repo.created_time,
       last_commit_time: repo.last_commit_time,
       stargazers_count: repo.stargazers_count,

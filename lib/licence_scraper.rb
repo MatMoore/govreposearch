@@ -4,9 +4,6 @@ class LicenceScraper
   end
 
   def scrape_text(readme)
-    # TODO this is a quick hack and will fail most of the time.
-    # This could be improved by also looking for a LICENCE file in the repo and
-    # working out the licence from its text.
     licence_section = false
 
     readme.lines.each do |line|
@@ -14,26 +11,23 @@ class LicenceScraper
       next if line.empty?
 
       if starts_licence_section?(line)
-        licence_section = true
-      elsif ends_licence_section?(line)
-        licence_section = false
+        return true
       end
 
-      if licence_section || looks_licency?(line)
+      if looks_licency?(line)
         # Compare line to known licences
         normalised = line.gsub(symbols, '')
 
         valid_licences.each do |valid_licence|
-          search_string, value = valid_licence
-
-          if normalised.include?(search_string)
-            return value
+          if normalised.include?(valid_licence)
+            logger.debug("LICENCE LINE: #{valid_licence} [#{line}]")
+            return true
           end
         end
       end
     end
 
-    nil
+    false
   end
 
   def valid_licences
@@ -122,14 +116,9 @@ class LicenceScraper
     ].flat_map do |name|
       match = /(?<long_name>.*) \((?<short_name>.*)\)/.match(name)
       if match.nil?
-        [
-          [name.gsub(symbols, ''), name.gsub(symbols, '')]
-        ]
+        [name.gsub(symbols, '')]
       else
-        [
-          [match[:long_name].gsub(symbols, ''), match[:short_name]],
-          [match[:short_name].gsub(symbols, ''), match[:short_name]],
-        ]
+        [match[:long_name].gsub(symbols, ''), match[:short_name]]
       end
     end
   end
@@ -143,13 +132,13 @@ class LicenceScraper
     /^#+\s*li[sc]en[sc]e/i =~ line
   end
 
-  # Assume any new section ends the previous one (ignore subheadings)
-  def ends_licence_section?(line)
-    line.starts_with?('#')
-  end
-
   # If the line mentions licences, it probably contains the licence
   def looks_licency?(line)
     /li[sc]en[sc]e/i =~ line
+  end
+
+private
+  def logger
+    Rails.logger
   end
 end

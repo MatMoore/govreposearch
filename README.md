@@ -8,9 +8,12 @@ software on Github.
 The crawler queries all code repositories belonging to known government
 organisations on Github, using the Github API.
 
-The README text and other repository information get added to an Elasticsearch search index.
+The README text and other repository information get added to an Elasticsearch
+search index.
 
-To be indexed, a repository has to have a README file, and the crawler has to be able to figure out the licence. Currently it just looks for some licence strings in the README text, so not all licences get picked up.
+To be indexed, a repository has to have a README file, and licence information.
+If there isn't a LICENCE.txt/md/rst file, the crawler tries to guess from the
+readme (not all licences are recognised this way).
 
 ## Getting Started
 
@@ -28,7 +31,8 @@ vagrant up
 vagrant ssh
 ```
 
-Alternatively, you can install Elasticsearch and ruby 2.4.0 directly on your host machine. (TODO)
+Alternatively, you can install Elasticsearch and ruby 2.4.0 directly on your
+host machine. (TODO)
 
 ### Building the search index
 
@@ -39,7 +43,8 @@ First create the search index:
 bundle exec rake index:create_or_replace
 ```
 
-If you get any errors, check that Elasticsearch is running and listening on port 9200.
+If you get any errors, check that Elasticsearch is running and listening on port
+9200.
 
 You can check Elasticsearch's health by visiting [http://localhost:9200/_cat/health]().
 
@@ -48,12 +53,14 @@ After creating the index, you can run the crawler with:
 bundle exec rake crawler:crawl
 ```
 
-P.S. the crawler will crash when it hits the Github API's rate limit of 60 requests/hour...
+P.S. the crawler will crash when it hits the Github API's rate limit of 60
+requests/hour...
 
 To crawl the whole list of organisations, you need to set up an access token.
 Visit [https://github.com/settings/tokens]() to generate one.
 
-Then set the environment variable `GITHUB_API_KEY`, or add it to a `.env` file in the root of the project, like
+Then set the environment variable `GITHUB_API_KEY`, or add it to a `.env` file
+in the root of the project, like
 ```
 GITHUB_API_KEY=<your key here>
 ```
@@ -129,7 +136,8 @@ The github API gives us a lot of information about repositories, including:
 - Tags that follow semantic versioning
 - Size of codebase
 
-Some organisations also follow metadata standards, which could tell us more about their repositories. For example:
+Some organisations also follow metadata standards, which could tell us more
+about their repositories. For example:
 - [civic.json](http://open.dc.gov/civic.json/)
 - [.about.yml](https://github.com/18F/about_yml)
 - [.codeinventory.yml](https://github.com/GSA/codeinventory)
