@@ -1,3 +1,5 @@
+require_relative "queries/random"
+
 class Searcher
   NAME = 'projects'.freeze
 
@@ -10,6 +12,15 @@ class Searcher
       client.search(
         index: NAME,
         q: query
+      )
+    )
+  end
+
+  def random
+    ResultSet.from_elasticsearch(
+      client.search(
+        index: NAME,
+        body: Query.random
       )
     )
   end

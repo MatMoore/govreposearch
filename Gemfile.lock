@@ -68,6 +68,7 @@ GEM
       elasticsearch-transport (= 2.0.1)
     elasticsearch-api (2.0.1)
       multi_json
+    elasticsearch-dsl (0.1.5)
     elasticsearch-transport (2.0.1)
       faraday
       multi_json
@@ -207,6 +208,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   dotenv-rails
   elasticsearch (~> 2.0)
+  elasticsearch-dsl (~> 0.1.5)
   faraday-http-cache
   jbuilder (~> 2.0)
   jquery-rails
