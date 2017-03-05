@@ -33,6 +33,7 @@ gem 'elasticsearch', '~> 2.0'
 gem "octokit", "~> 4.0"
 gem 'bootstrap-sass', '~> 3.3', '>= 3.3.6'
 gem 'bootstrap_form', "~> 2.6"
+gem 'faraday-http-cache'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
