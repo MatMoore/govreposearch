@@ -22,32 +22,34 @@ class Index
     )
   end
 
-  # Index or reindex a repository
-  def add(repo, replace: false)
-    payload = ElasticsearchPayload.new(repo)
-
-    begin
-      client.create(
-        index: NAME,
-        type: 'repository',
-        id: payload.id,
-        body: payload.body
-      )
-    rescue Elasticsearch::Transport::Transport::Errors::Conflict
-      # The gem forces an op_type of :create for the index endpoint, so we have
-      # to use the partial update API to reindex a document.
-      client.update(
-        index: NAME,
-        type: 'repository',
-        id: payload.id,
-        body: {doc: payload.body}
-      ) if replace
-    end
+  def bulk_upsert(repos)
+    client.bulk(
+      body: repos.flat_map {|repo| upsert(repo)}
+    )
   end
 
 private
 
   attr_reader :client
+
+  def upsert(repo)
+    payload = ElasticsearchPayload.new(repo)
+
+    [
+      {
+        "update": {
+          "_id" => payload.id,
+          "_type" => 'repository',
+          "_index" => NAME,
+          "_retry_on_conflict" => 3,
+        },
+      },
+      {
+        "doc" => payload.body,
+        "doc_as_upsert" => true
+      }
+    ]
+  end
 
   def index_settings
     {}
