@@ -1,7 +1,7 @@
 
 <div class="row">
   <div class="col col-md-12">
-<h1>GovRepoSearch</h1>
+<h1>Government code search</h1>
 
 <div class="well search-box ">
   <%= bootstrap_form_tag(url: "/", method: :get, layout: :inline, enforce_utf8: false) do |f| %>
@@ -19,7 +19,7 @@
   <% @results.each_with_index do |result, i| %>
     <li class="list-group-item">
       <big><%= link_to result.name, result.web_url %></big>
-      <p>Lorum ipsum</p
+      <p><%= result.description %></p
     </li>
   <% end %>
 </ul>
