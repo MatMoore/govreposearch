@@ -1,0 +1,18 @@
+query,better_choice,worse_choice
+user research,alphagov/govuk-user-research-panel,alphagov/contacts-admin
+sass malmo,malmostad/shared_assets,malmostad/sitevision_assets
+address ordinance survey,hmrc/address-reputation-ingester,hmrc/addresses
+arcgis,agrc/grunt-arcgis-press,adlnet/hpit_services
+slider widget html,wet-boew/fd-slider,UKHomeOffice/email-api
+govuk tagging,alphagov/content-tagger,alphagov/whitehall
+chef oracle,USGS-CIDA/chef-cookbook-oracle-server,alphagov/chef-auditd
+scala streaming decoder,hmrc/bulk-entity-streaming,hmrc/ct-calculations
+hospitals,commonwealth-of-puerto-rico/provedoresPR,cityofaustin/DeadSimpleScreeSharing
+css framework,IFARHU/nuget-taboga,ctt-gob-es/SIGM-Community
+frontend components,wet-boew/wet-boew,wet-boew/wet-boew-dist
+twitter LED,met-office-lab/molab-rhino-api,state-hiu/ittc-server-django
+puppet linter,alphagov/puppet-lint,alphagov/trade-tariff-backend
+gtfs data,afimb/cvdtc_cv,nla/flint
+environment agency flood data,alphagov/flooddata,fedspendingtransparency/Data-Transparency-Town-Hall
+generate powerpoint from website,informaticslab/pptgen,informaticslab/std2
+ansible ssl certificates,CSC-IT-Center-for-Science/ansible-ssl-certificate,interlegis/docker-osticket

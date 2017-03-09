@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+require_relative '../config/environment'
+require 'csv'
+
+Rails.logger = Logger.new('/dev/null')
+JUDGEMENTS_FILE = Rails.root.join('data', 'judgements.csv')
+
+# Load from file
+judgements = CSV.read(JUDGEMENTS_FILE, headers: :first_row)
+
+# Collect queries with preferred documents
+searcher = Searcher.new(log: false)
+random = searcher.random
+
+random.each do |a|
+  a_id = a.organisation + "/" + a.name
+  puts ""
+  puts "#{a_id}: #{a.description}"
+
+  b = searcher.similar_to(a_id).to_a[0, 5].sample
+
+  if b.nil?
+    puts "No similar found"
+    next
+  end
+
+  b_id = b.organisation + "/" + b.name
+  puts "#{b_id}: #{b.description}"
+  puts ""
+  puts "What should return #{a_id} but not #{b_id}? (leave blank to skip)"
+  query = gets.chomp
+  judgements << [query, a_id, b_id] if query.present?
+end
+
+# Write back to file
+CSV.open(JUDGEMENTS_FILE, "wb") do |csv|
+  csv << %w(query better_choice worse_choice)
+  judgements.each do |judgement|
+    csv << judgement
+  end
+end

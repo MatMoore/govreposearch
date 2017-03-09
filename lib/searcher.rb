@@ -1,4 +1,5 @@
 require_relative "queries/random"
+require_relative "queries/similar"
 
 class Searcher
   NAME = 'projects'.freeze
@@ -21,6 +22,15 @@ class Searcher
       client.search(
         index: NAME,
         body: Query.random
+      )
+    )
+  end
+
+  def similar_to(id)
+    ResultSet.from_elasticsearch(
+      client.search(
+        index: NAME,
+        body: Query.similar_to(id)
       )
     )
   end
