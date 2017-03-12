@@ -3,7 +3,7 @@ require 'elasticsearch/dsl'
 module Query
   extend Elasticsearch::DSL::Search
 
-  def self.similar_to(id)
+  def self.similar_to_query(id)
     search do
       query do
         more_like_this do

@@ -3,11 +3,12 @@ require 'elasticsearch/dsl'
 module Query
   extend Elasticsearch::DSL::Search
 
-  def self.random_query
+  def self.search_query(q)
     search do
       query do
-        function_score do
-          functions << {random_score: {seed: Random.new_seed.to_s}}
+        multi_match do
+          fields ["description", "name", "readme^2", "programming_languages"]
+          query q
         end
       end
     end
