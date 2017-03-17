@@ -95,3 +95,5 @@ bower.json
 .byebug_history
 
 /cache
+
+ansible/hosts
