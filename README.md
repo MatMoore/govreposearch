@@ -23,6 +23,8 @@ how to deploy the project on a live system.
 
 ### Prerequisites
 
+TODO: install ansible; create `ansible/secrets.yml` with `secret_key_base` var.
+
 You need vagrant and virtualbox to run the development environment. (TODO)
 
 Then, enter the ubuntu virtual machine:

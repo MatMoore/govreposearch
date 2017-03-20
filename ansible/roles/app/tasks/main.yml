@@ -1,0 +1,85 @@
+---
+- name: Include rails secrets
+  include_vars: secrets.yml
+
+- user:
+    name: "{{app_user}}"
+    system: yes
+    home: "{{app_root}}"
+
+# TODO replace with capistrano
+- apt:
+    name: rsync
+    update_cache: yes
+  tags:
+    - deploy
+
+- apt:
+    name: nodejs
+    update_cache: yes
+  tags:
+    - deploy
+
+- synchronize:
+    src: ../../../../
+    dest: "{{app_root}}"
+    rsync_opts:
+      - "--exclude=.git"
+      - "--exclude=ansible"
+      - "--exclude=pids"
+      - "--exclude=sockets"
+  notify:
+    - restart app
+  tags:
+    - deploy
+
+- bundler:
+    state: present
+    gemfile: "{{app_root}}/Gemfile"
+    user_install: no
+    chdir: "{{app_root}}"
+  notify:
+    - restart app
+  tags:
+    - deploy
+
+- file:
+    path: "{{app_root}}"
+    state: directory
+    owner: "{{app_user}}"
+    recurse: yes
+    mode: 0755
+  notify:
+    - restart app
+  tags:
+    - deploy
+
+- file:
+    path: "/var/log/govreposearch"
+    state: directory
+    owner: "{{app_user}}"
+    mode: 0755
+
+- file:
+    path: "{{app_root}}/pids"
+    state: directory
+    owner: "{{app_user}}"
+    mode: 0755
+
+- file:
+    path: "{{app_root}}/sockets"
+    state: directory
+    owner: "{{app_user}}"
+    mode: 0755
+
+- name: Unicorn | Copy init template to init.d dir
+  template:
+    src: app_upstart.conf.j2
+    dest: /etc/init/app.conf
+    owner: root
+    group: root
+    mode: 0555
+  notify:
+    - restart app
+  tags:
+    - deploy

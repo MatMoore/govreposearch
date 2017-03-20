@@ -1,0 +1,18 @@
+description "govreposearch"
+
+start on startup
+stop on shutdown
+
+setuid {{app_user}}
+env SECRET_KEY_BASE="{{ secret_key_base }}"
+
+respawn
+
+respawn limit 3 20
+
+chdir {{app_root}}
+
+script
+  bundle exec unicorn -c config/unicorn.rb --env production
+  flock -x 0 < {{app_root}}/pids/pidfile.lock
+end script
