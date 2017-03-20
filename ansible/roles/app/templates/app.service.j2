@@ -1,0 +1,17 @@
+[Unit]
+Description=Govreposearch Unicorn Server
+Wants=elasticsearch.service
+After=elasticsearch.service
+
+[Service]
+Type=forking
+User={{app_user}}
+WorkingDirectory={{app_root}}
+Environment=RAILS_ENV=production SECRET_KEY_BASE="{{ secret_key_base }}"
+SyslogIdentifier=gitlab-unicorn
+PIDFile=/var/govreposearch/pids/unicorn.pid
+
+ExecStart=/usr/local/bin/bundle exec "unicorn -D -c config/unicorn.rb --env production"
+
+[Install]
+WantedBy=multi-user.target

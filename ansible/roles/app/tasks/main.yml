@@ -1,6 +1,8 @@
 ---
 - name: Include rails secrets
   include_vars: secrets.yml
+  tags:
+    - deploy
 
 - user:
     name: "{{app_user}}"
@@ -43,6 +45,9 @@
   tags:
     - deploy
 
+- name: precompile asset files
+  command: chdir="{{ app_root }}" bundle exec rake assets:precompile
+
 - file:
     path: "{{app_root}}"
     state: directory
@@ -59,27 +64,44 @@
     state: directory
     owner: "{{app_user}}"
     mode: 0755
+  tags:
+    - deploy
 
 - file:
     path: "{{app_root}}/pids"
     state: directory
     owner: "{{app_user}}"
     mode: 0755
+  tags:
+    - deploy
 
 - file:
     path: "{{app_root}}/sockets"
     state: directory
     owner: "{{app_user}}"
     mode: 0755
+  tags:
+    - deploy
+#
+# - name: Unicorn | Copy init template to init.d dir
+#   template:
+#     src: app_upstart.conf.j2
+#     dest: /etc/init/app.conf
+#     owner: root
+#     group: root
+#     mode: 0555
+#   notify:
+#     - restart app
+#   tags:
+#     - deploy
 
-- name: Unicorn | Copy init template to init.d dir
-  template:
-    src: app_upstart.conf.j2
-    dest: /etc/init/app.conf
-    owner: root
-    group: root
-    mode: 0555
-  notify:
-    - restart app
+- template: src="app.service.j2" dest="/etc/systemd/system/app.service" mode=555
+  register: service_file
+  notify: restart app
+  tags:
+    - deploy
+
+- shell: systemctl daemon-reload
+  when: service_file.changed
   tags:
     - deploy
