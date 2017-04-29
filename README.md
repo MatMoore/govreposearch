@@ -23,24 +23,32 @@ how to deploy the project on a live system.
 
 ### Prerequisites
 
-TODO: install ansible; create `ansible/secrets.yml` with `secret_key_base` var.
-
-You need vagrant and virtualbox to run the development environment. (TODO)
+You need [vagrant](https://www.vagrantup.com/downloads.html) and [virtualbox](https://www.virtualbox.org/) to run the development environment.
 
 Then, enter the ubuntu virtual machine:
 ```
 vagrant up
 vagrant ssh
+cd /vagrant
 ```
 
-Alternatively, you can install Elasticsearch and ruby 2.4.0 directly on your
-host machine. (TODO)
+Alternatively, you can install [Elasticsearch](https://www.elastic.co/downloads/elasticsearch) and [ruby](https://www.ruby-lang.org/en/documentation/installation/) 2.4.0 directly on your
+host machine.
+
+### Install dependencies
+
+Install the gem dependencies with:
+
+```
+gem install bundler
+bundle install
+```
 
 ### Building the search index
 
-You need to create and populate the search index to run the app.
+To use the app you need to create and populate the search index.
 
-First create the search index:
+First, create the index:
 ```
 bundle exec rake index:create_or_replace
 ```
@@ -50,15 +58,15 @@ If you get any errors, check that Elasticsearch is running and listening on port
 
 You can check Elasticsearch's health by visiting [http://localhost:9200/_cat/health]().
 
-After creating the index, you can run the crawler with:
+After creating the index, run the crawler with:
 ```
 bundle exec rake crawler:crawl
 ```
 
 P.S. the crawler will crash when it hits the Github API's rate limit of 60
-requests/hour...
+requests/hour... 😱
 
-To crawl the whole list of organisations, you need to set up an access token.
+To crawl the whole list of organisations, you need an access token.
 Visit [https://github.com/settings/tokens]() to generate one.
 
 Then set the environment variable `GITHUB_API_KEY`, or add it to a `.env` file
@@ -70,16 +78,10 @@ GITHUB_API_KEY=<your key here>
 Indexing takes a while to run.
 
 ### Running the app
-First install the gem dependencies with:
-
-```
-gem install bundler
-bundle install
-```
 
 Run the app in development with
 ```
-bundle exec rails s
+foreman start
 ```
 
 If everything is working you should be able to view the app in your browser
@@ -89,25 +91,37 @@ at http://localhost:3000
 
 The tests are all written in RSpec.
 
-Run them with:
+Run them using:
 ```
 bundle exec rspec
 ```
 
-### Coding style
-
-TODO
-
 ## Deployment
 
-TODO.
+### Using ansible
+In the `ansible` directory, create a file named `hosts` with the ip/hostname of the server:
 
-The project should follow the [12 factor](https://12factor.net)
-methodology.
+```ini
+[default]
+some.server.here
+```
 
-It requires an elasticsearch cluster to run.
+In the same directory, create a secrets file
+`ansible-vault edit secrets.yml`
 
-The crawler should be scheduled to run nightly.
+In this file, set a secret key:
+
+```
+---
+secret_key_base: somesecretkeyhere
+```
+
+Then run:
+
+- `ansible-playbook --ask-vault-pass -s -i hosts playbook.yml` to set up elasticsearch and nginx
+- `ansible-playbook --ask-vault-pass -s -i hosts deploy.yml` to deploy the app
+
+These playbooks don't run the crawler. This can either be run manually or scheduled to run nightly, using the rake task.
 
 ## Built With
 
@@ -127,7 +141,7 @@ The crawler should be scheduled to run nightly.
 5. Submit a pull request :D
 
 ### Data that might be useful
-The github API gives us a lot of information about repositories, including:
+The github API gives a lot of information about repositories, including:
 
 - README text
 - Number of commits
