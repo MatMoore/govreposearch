@@ -1,9 +1,9 @@
 require 'elasticsearch/dsl'
 
-module Query
+module Queries::Search
   extend Elasticsearch::DSL::Search
 
-  def self.search_query(q)
+  def self.query(q)
     search do
       query do
         multi_match do

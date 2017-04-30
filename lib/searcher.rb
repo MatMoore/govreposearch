@@ -1,7 +1,3 @@
-require_relative "queries/random"
-require_relative "queries/similar"
-require_relative "queries/search"
-
 class Searcher
   NAME = 'projects'.freeze
 
@@ -13,7 +9,7 @@ class Searcher
     ResultSet.from_elasticsearch(
       client.search(
         index: NAME,
-        body: Query.search_query(query)
+        body: Queries::Search.query(query)
       )
     )
   end
@@ -22,7 +18,7 @@ class Searcher
     ResultSet.from_elasticsearch(
       client.search(
         index: NAME,
-        body: Query.random_query
+        body: Queries::Random.query
       )
     )
   end
@@ -31,7 +27,16 @@ class Searcher
     ResultSet.from_elasticsearch(
       client.search(
         index: NAME,
-        body: Query.similar_to_query(id)
+        body: Queries::Similar.query(id)
+      )
+    )
+  end
+
+  def trendy
+    ResultSet.from_elasticsearch(
+      client.search(
+        index: NAME,
+        body: Queries::Trendy.query
       )
     )
   end

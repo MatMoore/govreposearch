@@ -1,9 +1,9 @@
 require 'elasticsearch/dsl'
 
-module Query
+module Queries::Random
   extend Elasticsearch::DSL::Search
 
-  def self.random_query
+  def self.query
     search do
       query do
         function_score do

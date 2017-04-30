@@ -6,13 +6,19 @@
 <div class="well search-box ">
   <%= bootstrap_form_tag(url: "/", method: :get, layout: :inline, enforce_utf8: false) do |f| %>
   <div class="input-group col-md-12">
-    <input type="text" name="q" class="form-control" value="<%= params[:q] %>" placeholder="Search for...">
+    <input type="text" name="q" class="form-control" value="<%= @query %>" placeholder="Search for...">
     <span class="input-group-btn">
       <input type="submit" value="Search" class="btn btn-primary"/>
     </span>
   </div>
   <% end %>
 </div>
+
+<% if @query.present? %>
+<h3>Repositories matching <em><%= @query %></em></h3>
+<% else %>
+<h3>Trendy repositories</h3>
+<% end %>
 
 <% if @results.total > 0 %>
   <ul class="list-group">
@@ -23,7 +29,10 @@
     </li>
   <% end %>
 </ul>
+
 <p>Showing <%= @results.results.count %> of <%= @results.total %> repositories.</p>
+
+
 <% else %>
   <p>No repositories found.</p>
 <% end %>
