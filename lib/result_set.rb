@@ -4,28 +4,35 @@ class ResultSet
   attr_reader :total, :results
   delegate :each, to: :results
 
-  def initialize(results:, total:)
+  def initialize(results:, total:, pagination:)
     @results = results.dup.freeze
     @total = total
+    @pagination = pagination
   end
 
-  def self.from_elasticsearch(elasticsearch_response)
-    total = elasticsearch_response["hits"]["total"]
-    results = elasticsearch_response["hits"]["hits"].map do |hit|
-      Result.new(
-        hit["_score"],
-        *hit["_source"].slice(
-          "name",
-          "web_url",
-          "organisation",
-          "readme",
-          "programming_languages",
-          "description"
-        ).values
-      )
-    end
+  def has_next_page?
+    next_page < (total - 1)
+  end
 
-    ResultSet.new(results: results, total: total)
+  def has_previous_page?
+    previous_page != pagination.from
+  end
+
+  def previous_page
+    full_page_back = (pagination.from - pagination.page_size)
+    (full_page_back < 0) ? 0 : full_page_back
+  end
+
+  def next_page
+    pagination.from + pagination.page_size
+  end
+
+  def first_result_number
+    pagination.from + 1
+  end
+
+  def last_result_number
+    pagination.from + results.size
   end
 
   def inspect
@@ -45,4 +52,8 @@ class ResultSet
     :programming_languages,
     :description
   )
+
+private
+
+  attr_reader :pagination
 end

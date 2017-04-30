@@ -5,17 +5,18 @@ class Searcher
     @client = Elasticsearch::Client.new(log: log)
   end
 
-  def search(query)
-    ResultSet.from_elasticsearch(
+  def search(query, pagination)
+    build_result_set(
       client.search(
         index: NAME,
-        body: Queries::Search.query(query)
-      )
+        body: Queries::Search.query(query, pagination)
+      ),
+      pagination: pagination
     )
   end
 
   def random
-    ResultSet.from_elasticsearch(
+    build_result_set(
       client.search(
         index: NAME,
         body: Queries::Random.query
@@ -24,7 +25,7 @@ class Searcher
   end
 
   def similar_to(id)
-    ResultSet.from_elasticsearch(
+    build_result_set(
       client.search(
         index: NAME,
         body: Queries::Similar.query(id)
@@ -32,16 +33,36 @@ class Searcher
     )
   end
 
-  def trendy
-    ResultSet.from_elasticsearch(
+  def trendy(pagination)
+    build_result_set(
       client.search(
         index: NAME,
-        body: Queries::Trendy.query
-      )
+        body: Queries::Trendy.query(pagination)
+      ),
+      pagination: pagination
     )
   end
 
 private
 
   attr_reader :client
+
+  def build_result_set(elasticsearch_response, pagination: Pagination.new(10, 0))
+    total = elasticsearch_response["hits"]["total"]
+    results = elasticsearch_response["hits"]["hits"].map do |hit|
+      ResultSet::Result.new(
+        hit["_score"],
+        *hit["_source"].slice(
+          "name",
+          "web_url",
+          "organisation",
+          "readme",
+          "programming_languages",
+          "description"
+        ).values
+      )
+    end
+
+    ResultSet.new(results: results, total: total, pagination: pagination)
+  end
 end

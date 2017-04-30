@@ -3,8 +3,11 @@ require 'elasticsearch/dsl'
 module Queries::Trendy
   extend Elasticsearch::DSL::Search
 
-  def self.query
+  def self.query(pagination)
     search do
+      from pagination.from
+      size pagination.page_size
+
       query do
         function_score do
           query do

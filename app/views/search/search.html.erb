@@ -30,8 +30,15 @@
   <% end %>
 </ul>
 
-<p>Showing <%= @results.results.count %> of <%= @results.total %> repositories.</p>
-
+<p>Showing <%= @results.first_result_number %> - <%= @results.last_result_number %> of <%= @results.total %> repositories.</p>
+<ul>
+<% if @results.has_previous_page? %>
+<li><%= link_to 'Previous', url_for(request.query_parameters.merge(from: @results.previous_page)) %></li>
+<% end %>
+<% if @results.has_next_page? %>
+<li><%= link_to 'Next', url_for(request.query_parameters.merge(from: @results.next_page)) %></li>
+<% end %>
+</ul>
 
 <% else %>
   <p>No repositories found.</p>
