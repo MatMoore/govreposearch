@@ -1,7 +1,7 @@
 
 <div class="row">
   <h1>Government code search</h1>
-  <div class="col col-md-3">
+  <div class="col col-md-3" id="sidebar">
 
 <%= bootstrap_form_tag(url: "/", method: :get, enforce_utf8: false) do |f| %>
 <div class="well search-box form-inline">
@@ -35,9 +35,22 @@
 <div class="col col-md-9">
 <% if @query.present? %>
 <h3>Repositories matching <em><%= @query %></em>
-  <a href="/" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove" aria-label="clear query"></span></a></h3>
+  <a href="<%= url_for only_path: false, country_group: @selected_groups, q: '' %>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove" aria-label="clear query"></span></a>
+  <% if @selected_groups.present? %>
+  in <% @selected_groups.each_with_index do |group, i| %><% if i == @selected_groups.size - 1 && @selected_groups.size > 1 %> and <% elsif i > 0 %>, <% end %><%= group %><% end %>
+  <a class="btn btn-default btn-xs" href="<%= url_for only_path: false, country_group: [], q: @query %>">
+    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+  </a>
+  <% end %>
+  </h3>
+<% elsif @selected_groups.present? %>
+<h3>Repositories in <% @selected_groups.each_with_index do |group, i| %><% if i == @selected_groups.size - 1 && @selected_groups.size > 1 %> and <% elsif i > 0 %>, <% end %><%= group %><% end %>
+<a class="btn btn-default btn-xs" href="<%= url_for only_path: false, country_group: [], q: @query %>">
+  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+</a>
+</h3>
 <% else %>
-<h3>Trendy repositories</h3>
+<h3>All repositories</h3>
 <% end %>
 
 <% if @results.total > 0 %>
@@ -64,3 +77,12 @@
 
 </div>
 </div>
+<script>
+$(function() {
+  var form = $('#sidebar form');
+  var checkbox = form.find('input[type=checkbox]');
+  checkbox.change(function() {
+    form.trigger('submit');
+  });
+});
+</script>
