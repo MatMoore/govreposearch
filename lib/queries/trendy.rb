@@ -3,7 +3,7 @@ require 'elasticsearch/dsl'
 module Queries::Trendy
   extend Elasticsearch::DSL::Search
 
-  def self.query(pagination)
+  def self.query(pagination, country_groups: [])
     search do
       from pagination.from
       size pagination.page_size
@@ -11,7 +11,17 @@ module Queries::Trendy
       query do
         function_score do
           query do
-            match_all
+            bool do
+              unless country_groups.empty?
+                filter do
+                  terms organisation_group: country_groups
+                end
+              end
+
+              must do
+                match_all
+              end
+            end
           end
 
           functions << {

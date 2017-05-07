@@ -2,7 +2,7 @@ namespace :crawler do
   desc "Crawl github repositories and index them"
   task crawl: :environment do
     index = Index.new
-    organisations = OrganisationLoader.load
+    organisations = OrganisationLoader.organisations
     crawler = Crawler.new
 
     start_org = ENV['START']

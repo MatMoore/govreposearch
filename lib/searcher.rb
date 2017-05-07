@@ -5,11 +5,11 @@ class Searcher
     @client = Elasticsearch::Client.new(log: log)
   end
 
-  def search(query, pagination)
+  def search(query, pagination, country_groups: [])
     build_result_set(
       client.search(
         index: NAME,
-        body: Queries::Search.query(query, pagination)
+        body: Queries::Search.query(query, pagination, country_groups: country_groups)
       ),
       pagination: pagination
     )
@@ -33,11 +33,11 @@ class Searcher
     )
   end
 
-  def trendy(pagination)
+  def trendy(pagination, country_groups: [])
     build_result_set(
       client.search(
         index: NAME,
-        body: Queries::Trendy.query(pagination)
+        body: Queries::Trendy.query(pagination, country_groups: country_groups)
       ),
       pagination: pagination
     )
