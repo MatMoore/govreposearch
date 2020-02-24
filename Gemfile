@@ -31,7 +31,7 @@ gem 'unicorn', '~> 5.1'
 gem 'redcarpet', '~> 3.3', '>= 3.3.4'
 gem 'elasticsearch', '~> 2.0'
 gem "octokit", "~> 4.0"
-gem 'bootstrap-sass', '~> 3.3', '>= 3.3.6'
+gem 'bootstrap-sass', '~> 3.4'
 gem 'bootstrap_form', "~> 2.6"
 gem 'faraday-http-cache'
 gem 'elasticsearch-dsl', '~> 0.1.5'
